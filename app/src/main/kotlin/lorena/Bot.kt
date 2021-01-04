@@ -34,9 +34,13 @@ fun main(args: Array<String>) {
                     .asFlow()
                     .collect {
                         val message = it.message
-                        if (message.content == "!ping") {
-                            val channel = message.channel.awaitSingle()
-                            channel.createMessage("Pong!").awaitSingle()
+                        if(message.content.split(" ").get(0) == "!lore") {
+                            when(message.content.split(" ").get(1)) {
+                                "ping" -> {
+                                    val channel = message.channel.awaitSingle()
+                                    channel.createMessage("Pong!").awaitSingle()
+                                }
+                            }
                         }
                     }
             /* Reaction event handling*/
@@ -44,6 +48,7 @@ fun main(args: Array<String>) {
             it.on(ReactionAddEvent::class.java)
                     .asFlow()
                     .collect {
+                        val
                         TODO()
                     }
             // Removed Reaction
