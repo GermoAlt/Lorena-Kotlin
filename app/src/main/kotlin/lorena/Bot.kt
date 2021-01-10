@@ -14,15 +14,17 @@ import kotlinx.coroutines.reactor.mono
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import reactor.util.Loggers
-
+import io.github.cdimascio.dotenv.dotenv
 
 class Bot {
-    val token: String = "INSERT TOKEN HERE"
+//    val token: String = "NzYxMDI4MDE0MTcxNDg4MjY3.X3UokQ.Bpg1hHY50R8k1zTRFk7JpzqFYuU"
     val logger: Logger = LogManager.getLogger()
+    val dotenv = dotenv()
+    val testingFlag = true
 }
 
 fun main(args: Array<String>) {
-    val client = DiscordClient.create(Bot().token)
+    val client = DiscordClient.create(Bot().dotenv["TOKEN"])
     
 
     Loggers.useConsoleLoggers()
@@ -34,9 +36,11 @@ fun main(args: Array<String>) {
                     .asFlow()
                     .collect {
                         val message = it.message
-                        if(message.content.split(" ").get(0) == "!lore") {
-                            when(message.content.split(" ").get(1)) {
+                        val parsedMessage = message.content.split(" ")
+                        if(parsedMessage[0] == "!lore") {
+                            when(parsedMessage[1]) {
                                 "ping" -> {
+                                    Bot().logger.debug("ping event")
                                     val channel = message.channel.awaitSingle()
                                     channel.createMessage("Pong!").awaitSingle()
                                 }
@@ -48,7 +52,6 @@ fun main(args: Array<String>) {
             it.on(ReactionAddEvent::class.java)
                     .asFlow()
                     .collect {
-                        val
                         TODO()
                     }
             // Removed Reaction

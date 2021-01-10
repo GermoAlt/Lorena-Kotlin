@@ -50,9 +50,12 @@ dependencies {
 
     //Log4J
     compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.14.0'
+
+    //dotenv
+    compile 'io.github.cdimascio:dotenv-kotlin:6.2.2'
 }
 
 application {
     // Define the main class for the application.
-    mainClass = 'Loribio.AppKt'
+    mainClass = 'lorena.BotKt'
 }
