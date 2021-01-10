@@ -17,7 +17,6 @@ import reactor.util.Loggers
 import io.github.cdimascio.dotenv.dotenv
 
 class Bot {
-//    val token: String = "NzYxMDI4MDE0MTcxNDg4MjY3.X3UokQ.Bpg1hHY50R8k1zTRFk7JpzqFYuU"
     val logger: Logger = LogManager.getLogger()
     val dotenv = dotenv()
     val testingFlag = true
@@ -40,9 +39,32 @@ fun main(args: Array<String>) {
                         if(parsedMessage[0] == "!lore") {
                             when(parsedMessage[1]) {
                                 "ping" -> {
-                                    Bot().logger.debug("ping event")
                                     val channel = message.channel.awaitSingle()
                                     channel.createMessage("Pong!").awaitSingle()
+                                }
+
+                                "marco" -> {
+                                    val channel = message.channel.awaitSingle()
+                                    channel.createMessage("Polo!").awaitSingle()
+                                }
+
+                                "usercount" -> {
+                                    val channel = message.channel.awaitSingle()
+                                    channel.createMessage("usercount not implemented yet").awaitSingle()
+                                }
+
+                                "list" -> {
+                                    when(parsedMessage[2]) {
+                                        "me" -> {
+                                            val channel = message.channel.awaitSingle()
+                                            channel.createMessage("list me not implemented yet").awaitSingle()
+                                        }
+
+                                        "all" -> {
+                                            val channel = message.channel.awaitSingle()
+                                            channel.createMessage("list all not implemented yet").awaitSingle()
+                                        }
+                                    }
                                 }
                             }
                         }
