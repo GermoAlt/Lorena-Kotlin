@@ -11,23 +11,19 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactive.awaitSingle
 import kotlinx.coroutines.reactor.mono
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
-import reactor.util.Loggers
 import io.github.cdimascio.dotenv.dotenv
+import org.jetbrains.exposed.sql.Database
 
 class Bot {
-    val logger: Logger = LogManager.getLogger()
     val dotenv = dotenv()
+    val db = Database.connect(dotenv["DB_HOST"], driver = "com.mysql.jdbc.Driver", user = dotenv["DB_USER"], password = dotenv["DB_PASS"])
+
     val testingFlag = true
 }
 
 fun main(args: Array<String>) {
     val client = DiscordClient.create(Bot().dotenv["TOKEN"])
     
-
-    Loggers.useConsoleLoggers()
-
     client.withGateway {
         mono {
             //Bot commands list
@@ -36,33 +32,36 @@ fun main(args: Array<String>) {
                     .collect {
                         val message = it.message
                         val parsedMessage = message.content.split(" ")
-                        if(parsedMessage[0] == "!lore") {
-                            when(parsedMessage[1]) {
-                                "ping" -> {
-                                    val channel = message.channel.awaitSingle()
-                                    channel.createMessage("Pong!").awaitSingle()
-                                }
+                        if(!(Bot().testingFlag && message.channelId.asString() != "795392960697991248")) {
+                            if (parsedMessage[0] == "!lore") {
+                                when (parsedMessage[1]) {
+                                    "ping" -> {
+                                        println("ping")
+                                        val channel = message.channel.awaitSingle()
+                                        channel.createMessage("Pong!").awaitSingle()
+                                    }
 
-                                "marco" -> {
-                                    val channel = message.channel.awaitSingle()
-                                    channel.createMessage("Polo!").awaitSingle()
-                                }
+                                    "marco" -> {
+                                        val channel = message.channel.awaitSingle()
+                                        channel.createMessage("Polo!").awaitSingle()
+                                    }
 
-                                "usercount" -> {
-                                    val channel = message.channel.awaitSingle()
-                                    channel.createMessage("usercount not implemented yet").awaitSingle()
-                                }
+                                    "usercount" -> {
+                                        val channel = message.channel.awaitSingle()
+                                        channel.createMessage("usercount not implemented yet").awaitSingle()
+                                    }
 
-                                "list" -> {
-                                    when(parsedMessage[2]) {
-                                        "me" -> {
-                                            val channel = message.channel.awaitSingle()
-                                            channel.createMessage("list me not implemented yet").awaitSingle()
-                                        }
+                                    "list" -> {
+                                        when (parsedMessage[2]) {
+                                            "me" -> {
+                                                val channel = message.channel.awaitSingle()
+                                                channel.createMessage("list me not implemented yet").awaitSingle()
+                                            }
 
-                                        "all" -> {
-                                            val channel = message.channel.awaitSingle()
-                                            channel.createMessage("list all not implemented yet").awaitSingle()
+                                            "all" -> {
+                                                val channel = message.channel.awaitSingle()
+                                                channel.createMessage("list all not implemented yet").awaitSingle()
+                                            }
                                         }
                                     }
                                 }
@@ -74,13 +73,13 @@ fun main(args: Array<String>) {
             it.on(ReactionAddEvent::class.java)
                     .asFlow()
                     .collect {
-                        TODO()
+                        println("collected new reaction")
                     }
             // Removed Reaction
             it.on(ReactionRemoveEvent::class.java)
                     .asFlow()
                     .collect {
-                        TODO()
+                        println("collected deleted reaction")
                     }
         }
     }
